@@ -13,8 +13,11 @@ blue = (54, 156, 179)
 
 field = [['' for _ in range(3)] for _ in range(3)]
 X_flag = True
+message = ''
+game_over = False
 
 def render():
+    display.fill(white)
     pygame.draw.line(display, black, (200, 0), (200, h), 5)
     pygame.draw.line(display, black, (405, 0), (405, h), 5)
     pygame.draw.line(display, black, (0, 200), (h, 200), 5)
@@ -25,31 +28,27 @@ def render():
                 display.blit(pygame.font.SysFont("None", 300).render('x', True, red), [45 + 200 * x, 0 + 200 * y])
             elif field[y][x] == 'o':
                 display.blit(pygame.font.SysFont("None", 300).render('o', True, blue), [45 + 200 * x, 0 + 200 * y])
+    display.blit(pygame.font.SysFont("None", 50).render(message, True, green), [295, 295])
     pygame.display.flip()
 
 def check_game_over():
+    global game_over
+    global message
     for line in field:
         if line == ['x', 'x', 'x'] or line == ['o', 'o', 'o']:
-            display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
-            render()
-            sleep(5)
-            pygame.quit()
-            quit()
+            message = 'You win!'
+            game_over = True
+            return
     for colum in range(3):
         if field[0][colum] == field[1][colum] == field[2][colum] == 'x' or field[0][colum] == field[1][colum] == field[2][colum] == 'o':
-            display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
-            render()
-            sleep(5)
-            pygame.quit()
-            quit()
+            message = 'You win!'
+            game_over = True
+            return
     if field[0][0] == field[1][1] == field[2][2] == 'x' or field[0][1] == field[1][1] == field[2][0] == 'x' or field[0][0] == field[1][1] == field[2][2] == 'o' or field[0][1] == field[1][1] == field[2][0] == 'o':
+        message = 'You win!'
+        game_over = True
+        return
 
-        render()
-        sleep(5)
-        pygame.quit()
-        quit()
-
-    game_over = False
     for line in field:
         if not '' in line:
             game_over = True
@@ -57,11 +56,8 @@ def check_game_over():
             game_over = False
             break
     if game_over:
-        display.blit(pygame.font.SysFont("None", 50).render('Draw', True, green), [295, 295])
-        render()
-        sleep(5)
-        pygame.quit()
-        quit()
+        message = 'Draw'
+        game_over = True
 
 def user_step(x, y):
     global X_flag
@@ -73,9 +69,9 @@ def user_step(x, y):
         else:
             field[y][x] = 'o'
             X_flag = True
-display.fill(white)
+
 render()
-while True:
+while not game_over:
     display.fill(white)
     events = pygame.event.get()
     for event in events:
@@ -91,5 +87,7 @@ while True:
             x, y = pygame.mouse.get_pos()
             x, y = x // 205, y // 205
             user_step(x, y)
-            render()
             check_game_over()
+            render()
+
+sleep(5)
