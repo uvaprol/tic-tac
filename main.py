@@ -13,6 +13,7 @@ black = (0, 0, 0)
 blue = (54, 156, 179)
 
 field = [['' for _ in range(3)] for _ in range(3)]
+X_flag = True
 
 def render():
     display.fill(white)
@@ -60,8 +61,15 @@ def check_game_over():
         pygame.quit()
         quit()
 
-
-
+def user_step(x, y):
+    global X_flag
+    if field[y][x] != 'x' and field[y][x] != 'o':
+        if X_flag and field[y][x] != 'x':
+            field[y][x] = 'x'
+            X_flag = False
+        elif X_flag and field[y][x] != 'o':
+            field[y][x] = 'o'
+            X_flag = True
 
 
 while True:
