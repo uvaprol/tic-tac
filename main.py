@@ -37,12 +37,12 @@ def check_game_over():
             pygame.quit()
             quit()
     for colum in range(3):
-        if field[0][colum] == field[1][colum] == field[2][colum]:
+        if field[0][colum] == field[1][colum] == field[2][colum] == 'x' or field[0][colum] == field[1][colum] == field[2][colum] == 'o':
             display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
             sleep(5)
             pygame.quit()
             quit()
-    if field[0][0] == field[1][1] == field[2][2] or field[0][1] == field[1][1] == field[2][0]:
+    if field[0][0] == field[1][1] == field[2][2] == 'x' or field[0][1] == field[1][1] == field[2][0] == 'x' or field[0][0] == field[1][1] == field[2][2] == 'o' or field[0][1] == field[1][1] == field[2][0] == 'o':
         display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
         sleep(5)
         pygame.quit()
@@ -71,12 +71,11 @@ def user_step(x, y):
             field[y][x] = 'o'
             X_flag = True
 
-
+render()
 while True:
-    render()
     events = pygame.event.get()
     for event in events:
-        print(event)
+        # print(event)
         if event.type == pygame.QUIT:
             pygame.quit()
             quit()
@@ -84,3 +83,9 @@ while True:
             if event.key == pygame.K_ESCAPE:
                 pygame.quit()
                 quit()
+        elif event.type == pygame.MOUSEBUTTONDOWN:
+            x, y = pygame.mouse.get_pos()
+            x, y = x // 205, y // 205
+            user_step(x, y)
+            check_game_over()
+            render()
