@@ -1,5 +1,4 @@
 import pygame
-from random import randint as rd
 from time import sleep
 pygame.init()
 w = 610 # ширина экрана
@@ -16,7 +15,6 @@ field = [['' for _ in range(3)] for _ in range(3)]
 X_flag = True
 
 def render():
-    display.fill(white)
     pygame.draw.line(display, black, (200, 0), (200, h), 5)
     pygame.draw.line(display, black, (405, 0), (405, h), 5)
     pygame.draw.line(display, black, (0, 200), (h, 200), 5)
@@ -33,17 +31,20 @@ def check_game_over():
     for line in field:
         if line == ['x', 'x', 'x'] or line == ['o', 'o', 'o']:
             display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
+            render()
             sleep(5)
             pygame.quit()
             quit()
     for colum in range(3):
         if field[0][colum] == field[1][colum] == field[2][colum] == 'x' or field[0][colum] == field[1][colum] == field[2][colum] == 'o':
             display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
+            render()
             sleep(5)
             pygame.quit()
             quit()
     if field[0][0] == field[1][1] == field[2][2] == 'x' or field[0][1] == field[1][1] == field[2][0] == 'x' or field[0][0] == field[1][1] == field[2][2] == 'o' or field[0][1] == field[1][1] == field[2][0] == 'o':
-        display.blit(pygame.font.SysFont("None", 50).render('You win!', True, green), [295, 295])
+
+        render()
         sleep(5)
         pygame.quit()
         quit()
@@ -57,22 +58,25 @@ def check_game_over():
             break
     if game_over:
         display.blit(pygame.font.SysFont("None", 50).render('Draw', True, green), [295, 295])
+        render()
         sleep(5)
         pygame.quit()
         quit()
 
 def user_step(x, y):
     global X_flag
-    if field[y][x] != 'x' and field[y][x] != 'o':
-        if X_flag and field[y][x] != 'x':
+    global field
+    if field[y][x] == '':
+        if X_flag:
             field[y][x] = 'x'
             X_flag = False
-        elif X_flag and field[y][x] != 'o':
+        else:
             field[y][x] = 'o'
             X_flag = True
-
+display.fill(white)
 render()
 while True:
+    display.fill(white)
     events = pygame.event.get()
     for event in events:
         # print(event)
@@ -87,5 +91,5 @@ while True:
             x, y = pygame.mouse.get_pos()
             x, y = x // 205, y // 205
             user_step(x, y)
-            check_game_over()
             render()
+            check_game_over()
